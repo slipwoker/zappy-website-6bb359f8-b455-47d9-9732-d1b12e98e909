@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <title>Np Productions — Np Productions</title>
+    <meta name="description" content="A landing page designed for a singer or musical performer to present their services and have clients digitally sign a professional contract. The page serves as ">
+    <meta name="keywords" content="Np Productions, np productions, זמר לאירועים בישראל, הזמנת זמר לחתונה">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <!-- Zappy Analytics -->
+<script>
+(function() {
+  'use strict';
+  
+  // Configuration
+  var config = {
+    websiteId: '6bb359f8-b455-47d9-9732-d1b12e98e909',
+    apiUrl: 'https://api.zappy5.com/api/analytics/track',
+    sessionDuration: 30 * 60 * 1000, // 30 minutes
+    visitorDuration: 30 * 24 * 60 * 60 * 1000, // 30 days
+    trackPageViews: true,
+    trackClicks: true,
+    trackFormSubmissions: true
+  };
+  
+  // Generate or retrieve persistent visitor ID (30 days)
+  function getVisitorId() {
+    var visitorKey = 'zappy_visitor_' + config.websiteId;
+    var visitor = null;
+    
+    try {
+      visitor = localStorage.getItem(visitorKey);
+      if (visitor) {
+        var visitorData = JSON.parse(visitor);
+        var now = Date.now();
+        
+        // Check if visitor ID is still valid (30 days)
+        if (now - visitorData.created < config.visitorDuration) {
+          // Update last seen timestamp
+          visitorData.lastSeen = now;
+          localStorage.setItem(visitorKey, JSON.stringify(visitorData));
+          return visitorData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: LocalStorage not available');
+    }
+    
+    // Generate new visitor ID
+    var newVisitorId = 'zv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      localStorage.setItem(visitorKey, JSON.stringify({
+        id: newVisitorId,
+        created: Date.now(),
+        lastSeen: Date.now()
+      }));
+    } catch (e) {
+      // Continue without local storage
+    }
+    
+    return newVisitorId;
+  }
+  
+  // Generate or retrieve session ID (30 minutes)
+  function getSessionId() {
+    var sessionKey = 'zappy_session_' + config.websiteId;
+    var session = null;
+    
+    try {
+      session = sessionStorage.getItem(sessionKey);
+      if (session) {
+        var sessionData = JSON.parse(session);
+        var now = Date.now();
+        
+        // Check if session is still valid
+        if (now - sessionData.timestamp < config.sessionDuration) {
+          // Update timestamp
+          sessionData.timestamp = now;
+          sessionStorage.setItem(sessionKey, JSON.stringify(sessionData));
+          return sessionData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: SessionStorage not available');
+    }
+    
+    // Generate new session ID
+    var newSessionId = 'zs_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      sessionStorage.setItem(sessionKey, JSON.stringify({
+        id: newSessionId,
+        timestamp: Date.now()
+      }));
+    } catch (e) {
+      // Continue without session storage
+    }
+    
+    return newSessionId;
+  }
+  
+  var visitorId = getVisitorId();
+  var sessionId = getSessionId();
+  
+  // Track an event
+  function trackEvent(eventType, data) {
+    data = data || {};
+    
+    var eventData = {
+      website_id: config.websiteId,
+      event_type: eventType,
+      page_path: window.location.pathname,
+      referrer: document.referrer || 'direct',
+      visitor_id: visitorId,
+      session_id: sessionId,
+      metadata: data
+    };
+    
+    // Use sendBeacon if available (better for page unload events)
+    if (navigator.sendBeacon) {
+      var blob = new Blob([JSON.stringify(eventData)], { type: 'application/json' });
+      navigator.sendBeacon(config.apiUrl, blob);
+    } else {
+      // Fallback to fetch
+      fetch(config.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventData),
+        keepalive: true
+      }).catch(function(error) {
+        console.warn('Zappy Analytics: Failed to track event', error);
+      });
+    }
+  }
+  
+  // Track page view
+  if (config.trackPageViews) {
+    trackEvent('pageview', {
+      title: document.title,
+      url: window.location.href
+    });
+  }
+  
+  // Track clicks on important elements
+  if (config.trackClicks) {
+    document.addEventListener('click', function(e) {
+      var target = e.target;
+      
+      // Track button clicks (counted as actions)
+      if (target.tagName === 'BUTTON' || target.closest('button')) {
+        var button = target.tagName === 'BUTTON' ? target : target.closest('button');
+        trackEvent('click', {
+          element: 'button',
+          text: button.textContent.trim().substring(0, 100),
+          id: button.id || null,
+          class: button.className || null
+        });
+      }
+      
+      // Track link clicks (navigation - not counted as actions)
+      else if (target.tagName === 'A' || target.closest('a')) {
+        var link = target.tagName === 'A' ? target : target.closest('a');
+        trackEvent('navigation', {
+          element: 'link',
+          text: link.textContent.trim().substring(0, 100),
+          href: link.href,
+          external: link.hostname !== window.location.hostname
+        });
+      }
+    }, true);
+  }
+  
+  // Track form submissions
+  if (config.trackFormSubmissions) {
+    document.addEventListener('submit', function(e) {
+      var form = e.target;
+      
+      trackEvent('form_submit', {
+        form_id: form.id || null,
+        form_name: form.name || null,
+        form_action: form.action || null,
+        form_method: form.method || 'GET'
+      });
+    }, true);
+  }
+  
+  // Track time on page (send on page unload)
+  var pageLoadTime = Date.now();
+  
+  window.addEventListener('beforeunload', function() {
+    var timeOnPage = Math.floor((Date.now() - pageLoadTime) / 1000); // in seconds
+    
+    trackEvent('page_unload', {
+      time_on_page: timeOnPage,
+      page_path: window.location.pathname
+    });
+  });
+  
+  // Expose tracking function globally for custom events
+  window.zappyAnalytics = {
+    track: trackEvent,
+    getVisitorId: function() { return visitorId; },
+    getSessionId: function() { return sessionId; }
+  };
+  
+})();
+</script>
+<!-- End Zappy Analytics -->
+    <meta property="og:title" content="Np Productions — Np Productions">
+    <meta property="og:description" content="A landing page designed for a singer or musical performer to present their services and have clients digitally sign a professional contract. The page serves as ">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Np Productions — Np Productions">
+    <meta name="twitter:description" content="A landing page designed for a singer or musical performer to present their services and have clients digitally sign a professional contract. The page serves as ">
+    <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <!-- Cookie Consent -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.css">
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.umd.js"></script>
+    <!-- Mickidum Accessibility Toolbar -->
+    <script src="https://cdn.jsdelivr.net/gh/mickidum/acc_toolbar/acctoolbar/acctoolbar.min.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+
+    <style id="zappy-dropdown-submenu-styles">
+      /* ========== DESKTOP DROPDOWN SUBMENU STYLES ========== */
+      /* Base styles for dropdown submenus - parent must be positioned */
+      .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { position: relative; }
+      /* Submenu base - hidden by default */
+      .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { display: block !important; position: absolute !important; top: 100%; left: 0; min-width: 220px; background: white; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); padding: 8px 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 1000; list-style: none; pointer-events: none; }
+      /* CRITICAL: Desktop hover styles to show dropdown */
+      .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Submenu item styling */
+      .sub-menu li { list-style: none; margin: 0; padding: 0; }
+      .sub-menu a { display: block !important; padding: 10px 16px !important; color: var(--text-dark, #333) !important; font-weight: 500; text-decoration: none; white-space: nowrap; transition: background-color 0.2s; }
+      .sub-menu .zappy-nav-child > a { padding-left: 28px !important; font-size: 0.9em !important; opacity: 0.85 !important; }
+      [dir="rtl"] .sub-menu .zappy-nav-child > a, html[lang="he"] .sub-menu .zappy-nav-child > a, html[lang="ar"] .sub-menu .zappy-nav-child > a { padding-left: 10px !important; padding-right: 28px !important; }
+      .sub-menu .zappy-nav-parent > a { font-weight: 600 !important; }
+      .sub-menu a:hover { background-color: #f5f5f5; }
+      /* RTL (Hebrew/Arabic) dropdown positioning */
+      [dir="rtl"] .nav-menu .sub-menu, [dir="rtl"] nav .sub-menu, [dir="rtl"] .navbar .sub-menu, html[lang="he"] .nav-menu .sub-menu, html[lang="he"] nav .sub-menu, html[lang="he"] .navbar .sub-menu, html[lang="ar"] .nav-menu .sub-menu, html[lang="ar"] nav .sub-menu, html[lang="ar"] .navbar .sub-menu { left: auto !important; right: 0 !important; }
+      /* Hide empty dropdown menus (exclude catalog sub-menus that use <a> children instead of <li>) */
+      .sub-menu:empty, .sub-menu:not(:has(li:not(.zappy-hidden-menu-item))):not(:has(> a)), .sub-menu:not(:has(li)):not(:has(> a)) { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+      /* Desktop: show submenu on Menu Group hover */
+      li:has(.menu-group-title):hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Menu Group title styling */
+      .nav-menu > li > .menu-group-title, #navMenu > li > .menu-group-title { display: inline-block; padding: 0.5rem 1rem; cursor: default; user-select: none; }
+      
+      /* ========== MOBILE SUBMENU STYLES ========== */
+      @media (max-width: 768px) {
+        .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { position: static !important; transform: none !important; box-shadow: none !important; background: transparent !important; max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; padding: 0 !important; border-radius: 0 !important; }
+        .navbar .sub-menu.mobile-expanded, .nav-menu .sub-menu.mobile-expanded, #navMenu .sub-menu.mobile-expanded { max-height: none !important; overflow-y: visible !important; opacity: 1 !important; visibility: visible !important; padding: 8px 0 8px 16px !important; }
+        [dir="rtl"] .sub-menu.mobile-expanded, html[lang="he"] .sub-menu.mobile-expanded { padding: 8px 16px 8px 0 !important; }
+        /* Disable hover behavior on mobile */
+        .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 0; visibility: hidden; pointer-events: none; }
+        .nav-menu li > .sub-menu.mobile-expanded, nav li > .sub-menu.mobile-expanded, .navbar li > .sub-menu.mobile-expanded, #navMenu li > .sub-menu.mobile-expanded { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+        .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { display: flex !important; flex-wrap: wrap !important; align-items: center !important; position: relative !important; min-height: 44px !important; }
+        .nav-menu li:has(.sub-menu) > a, nav li:has(.sub-menu) > a, .navbar li:has(.sub-menu) > a, #navMenu li:has(.sub-menu) > a { flex: 1 !important; min-width: 0 !important; }
+        .nav-menu li:has(.sub-menu) > .menu-group-title, nav li:has(.sub-menu) > .menu-group-title, .navbar li:has(.sub-menu) > .menu-group-title, #navMenu li:has(.sub-menu) > .menu-group-title { flex: 1 !important; min-width: 0 !important; padding: 0 !important; line-height: inherit !important; }
+        .nav-menu li:has(.sub-menu) > .sub-menu, nav li:has(.sub-menu) > .sub-menu, .navbar li:has(.sub-menu) > .sub-menu, #navMenu li:has(.sub-menu) > .sub-menu { flex-basis: 100% !important; width: 100% !important; }
+        .nav-menu li:has(.sub-menu) > a [class*="chevron"], .nav-menu li:has(.sub-menu) > a [class*="arrow"], .nav-menu li:has(.sub-menu) > a .fa-chevron-down, .nav-menu li:has(.sub-menu) > a .fa-angle-down, nav li:has(.sub-menu) > a [class*="chevron"], nav li:has(.sub-menu) > a [class*="arrow"], #navMenu li:has(.sub-menu) > a [class*="chevron"], #navMenu li:has(.sub-menu) > a [class*="arrow"] { display: none !important; visibility: hidden !important; }
+        .mobile-submenu-toggle { display: flex !important; align-items: center !important; justify-content: center !important; width: 44px !important; height: auto !important; background: transparent !important; border: none !important; cursor: pointer !important; color: var(--text-dark) !important; position: static !important; flex-shrink: 0 !important; align-self: stretch !important; z-index: 2 !important; padding: 0 !important; margin: 0 !important; }
+        .mobile-submenu-toggle::after { content: '' !important; width: 0 !important; height: 0 !important; border-left: 6px solid transparent !important; border-right: 6px solid transparent !important; border-top: 7px solid currentColor !important; transition: transform 0.3s ease !important; }
+        .mobile-submenu-toggle.expanded::after { transform: rotate(180deg) !important; }
+        .sub-menu a { padding: 10px 0 !important; display: block !important; color: var(--text-dark) !important; white-space: normal !important; }
+        .sub-menu .zappy-nav-child > a { padding-left: 28px !important; font-size: 0.9em !important; opacity: 0.85 !important; }
+        [dir="rtl"] .sub-menu .zappy-nav-child > a, html[lang="he"] .sub-menu .zappy-nav-child > a, html[lang="ar"] .sub-menu .zappy-nav-child > a { padding-left: 0 !important; padding-right: 28px !important; }
+        .sub-menu .zappy-nav-parent > a { font-weight: 600 !important; }
+        .nav-menu.active, #navMenu.active { max-width: 100vw !important; overflow-x: hidden !important; box-sizing: border-box !important; }
+        .navbar .sub-menu li a, nav.navbar .sub-menu li a, .zappy-products-dropdown .sub-menu a { color: var(--text-dark) !important; }
+      }
+      @media (min-width: 769px) { .mobile-submenu-toggle { display: none !important; } }
+    </style>
+
+    <style id="zappy-widget-visibility">
+      #mic-access-tool-general-button, .mic-access-tool-general-button,
+      #mic-init-access-tool .mic-access-tool-general-button, #mic-init-access-tool #mic-access-tool-general-button,
+      ._access-icon, #mic-access-tool-box, .mic-access-tool-box,
+      #mic-init-access-tool #mic-access-tool-box, div[id*="mic-access-tool-box"], ._access-menu {
+        display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;
+      }
+    </style>
+</head>
+<body>
+
+  <nav class="navbar" dir="rtl">
+  <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+    <svg class="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+    <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" style="display: none;">
+      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+  </button>
+
+  <button class="phone-header-btn" data-phone="[business_phone]" aria-label="Call">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+    </svg>
+  </button>
+
+  <div class="nav-container">
+    <div class="nav-right-group"><div class="nav-brand">
+      <a href="/" class="logo-link">
+        <img src="/assets/np-productions-logo.webp" alt="Np Productions" class="logo">
+      </a>
+    </div><ul class="nav-menu" id="navMenu"><li><a href="#services">שירותים</a></li><li><a href="#benefits">יתרונות</a></li><li><a href="#testimonials">המלצות</a></li><li><a href="#portfolio">תיק עבודות</a></li><li><a href="#stats">נתונים</a></li></ul></div>
+
+    
+
+    <div class="nav-cta-container">
+      <a href="#contact" class="nav-cta-btn">צור קשר</a>
+    </div>
+  </div>
+</nav>
+<script>
+
+// Navbar Mobile Menu Toggle and Contrast Fix
+(function() {
+  // Use 'load' event instead of 'DOMContentLoaded' to ensure we run AFTER all other scripts
+  window.addEventListener('load', function() {
+    
+    // FIX MOBILE BUTTON CONTRAST
+    // Detect navbar background color and apply contrasting color to mobile buttons
+    const navbar = document.querySelector('.navbar, nav, header');
+    if (!navbar) {
+      console.log('[Navbar] Navbar element not found');
+      return;
+    }
+    
+    // DECLARE VARIABLES EARLY to avoid Temporal Dead Zone errors
+    // These are used in multiple places below
+    let mobileToggle = document.getElementById('mobileToggle') ||
+                       document.querySelector('.mobile-toggle') ||
+                       document.querySelector('.hamburger') ||
+                       document.querySelector('.hamburger-menu') ||
+                       document.querySelector('.menu-toggle') ||
+                       document.querySelector('.burger-menu') ||
+                       document.querySelector('[aria-label="Menu"]') ||
+                       document.querySelector('[aria-label="תפריט"]');
+    
+    const phoneBtn = document.querySelector('.phone-header-btn');
+    
+    const computedStyle = window.getComputedStyle(navbar);
+    let bgColor = computedStyle.backgroundColor;
+    
+    console.log('[Navbar] Initial navbar background:', bgColor);
+    
+    // Check if background is transparent or rgba with 0 alpha
+    const isTransparent = bgColor === 'transparent' || 
+                         bgColor === 'rgba(0, 0, 0, 0)' ||
+                         (bgColor.startsWith('rgba') && bgColor.includes(', 0)'));
+    
+    if (isTransparent) {
+      // Check for background-image or gradient
+      const bgImage = computedStyle.backgroundImage;
+      if (bgImage && bgImage !== 'none') {
+        console.log('[Navbar] Navbar has background image/gradient, using dark text');
+        bgColor = 'rgb(240, 240, 240)'; // Assume light background
+      } else {
+        // Transparent navbar - check body background
+        const bodyBg = window.getComputedStyle(document.body).backgroundColor;
+        console.log('[Navbar] Navbar transparent, using body background:', bodyBg);
+        bgColor = bodyBg;
+      }
+    }
+    
+    // Calculate luminance to determine if background is light or dark
+    const rgb = bgColor.match(/\d+/g);
+    if (rgb && rgb.length >= 3) {
+      const r = parseInt(rgb[0]);
+      const g = parseInt(rgb[1]);
+      const b = parseInt(rgb[2]);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      
+      // Mobile button colors are set by Claude's AI-generated CSS (same as .nav-menu a)
+      // No dynamic color overrides needed - colors come from the generated navbar CSS
+      console.log('[Navbar] Mobile button colors preserved from Claude CSS (luminance:', luminance.toFixed(2) + ')');
+      
+      // FIX ICON SIZES - Ensure SVGs are properly sized and visible
+      // INJECT CRITICAL CSS TO OVERRIDE ANY CONFLICTING RULES
+      const criticalCSS = document.createElement('style');
+      criticalCSS.id = 'zappy-mobile-nav-fix';
+      const htmlLang = document.documentElement.lang || 'en';
+      const htmlDir = document.documentElement.dir || 'ltr';
+      // Check both dir attribute AND lang for RTL detection
+      // dir="rtl" is the most reliable indicator
+      const isRTL = htmlDir === 'rtl' || htmlLang === 'he' || htmlLang === 'ar';
+      
+      criticalCSS.textContent = `
+        /* Hide mobile buttons on desktop, show only on mobile */
+        @media (min-width: 769px) {
+          .mobile-toggle,
+          .phone-header-btn {
+            display: none !important;
+          }
+        }
+        
+        /* Show and position mobile buttons correctly on mobile */
+        @media (max-width: 768px) {
+          .mobile-toggle,
+          .phone-header-btn {
+            position: absolute !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            z-index: 1001 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 50% !important;
+            border: none !important;
+            cursor: pointer !important;
+            padding: 6px !important;
+            background: none !important;
+            color: var(--nav-text, var(--text-dark)) !important;
+          }
+          
+          /* LTR positioning (default): hamburger LEFT, phone RIGHT */
+          html:not([dir="rtl"]):not([lang="he"]):not([lang="ar"]) .mobile-toggle,
+          html[dir="ltr"] .mobile-toggle {
+            left: 12px !important;
+            right: auto !important;
+          }
+          html:not([dir="rtl"]):not([lang="he"]):not([lang="ar"]) .phone-header-btn,
+          html[dir="ltr"] .phone-header-btn {
+            right: 12px !important;
+            left: auto !important;
+          }
+          
+          /* RTL positioning: hamburger RIGHT, phone LEFT */
+          html[dir="rtl"] .mobile-toggle,
+          html[lang="he"] .mobile-toggle,
+          html[lang="ar"] .mobile-toggle {
+            right: 12px !important;
+            left: auto !important;
+          }
+          html[dir="rtl"] .phone-header-btn,
+          html[lang="he"] .phone-header-btn,
+          html[lang="ar"] .phone-header-btn {
+            left: 12px !important;
+            right: auto !important;
+          }
+          
+          /* CRITICAL: Ensure nav-container has min-height on mobile */
+          /* All children are positioned absolutely/fixed on mobile, so height:auto collapses to 0 */
+          .nav-container {
+            min-height: 70px !important;
+            position: relative !important;
+          }
+          
+          /* Ensure SVG icons are properly sized and inherit color */
+          .mobile-toggle svg,
+          .phone-header-btn svg {
+            width: 24px !important;
+            height: 24px !important;
+            /* Don't force display - let JavaScript control hamburger/close toggle */
+          }
+          
+          /* Reset nav-cta-container on mobile - remove desktop box-shadow/padding */
+          /* that creates a visible ghost box when CTA button is hidden */
+          .nav-cta-container {
+            box-shadow: none !important;
+            padding: 0 !important;
+          }
+          
+          /* Hide nav-cta-container entirely on mobile when there's no lang-switcher */
+          /* (only the CTA button is inside, and it's hidden on mobile) */
+          .nav-cta-container:not(:has(.lang-switcher)) {
+            display: none !important;
+          }
+          
+          /* CRITICAL: Prevent hero image fade gradient from bleeding over headline text */
+          /* The .image-fade-gradient has bottom: -30px (extends below parent) */
+          /* On mobile stacked layout, this overlaps the h1 text below the image */
+          .hero-image-column {
+            overflow: hidden !important;
+          }
+          .image-fade-gradient {
+            bottom: 0 !important;
+          }
+          
+          /* Hide desktop language switcher on mobile - hamburger menu handles it */
+          /* High specificity to override stored CSS */
+          .lang-switcher,
+          .nav-cta-container .lang-switcher,
+          .nav-container .lang-switcher,
+          .navbar .lang-switcher,
+          .navbar .nav-cta-container .lang-switcher {
+            display: none !important;
+          }
+        }
+      `;
+      
+      // Remove existing fix if present and inject new one
+      const existing = document.getElementById('zappy-mobile-nav-fix');
+      if (existing) existing.remove();
+      document.head.appendChild(criticalCSS);
+      
+      console.log('[Navbar] Critical CSS injected for mobile nav positioning');
+      
+      // ONLY apply inline positioning styles on mobile viewport
+      // On desktop, the CSS handles hiding these buttons with display: none
+      // Inline styles were breaking desktop layout by overriding CSS
+      const isMobileViewport = window.innerWidth <= 768;
+      
+      if (mobileToggle) {
+        // Icon sizing applies to all viewports for consistency
+        const hamburgerIcon = mobileToggle.querySelector('.hamburger-icon');
+        const closeIcon = mobileToggle.querySelector('.close-icon');
+        
+        if (hamburgerIcon) {
+          hamburgerIcon.style.setProperty('width', '24px', 'important');
+          hamburgerIcon.style.setProperty('height', '24px', 'important');
+          hamburgerIcon.style.setProperty('display', 'block', 'important'); // Show hamburger by default
+        }
+        if (closeIcon) {
+          closeIcon.style.setProperty('width', '24px', 'important');
+          closeIcon.style.setProperty('height', '24px', 'important');
+          closeIcon.style.setProperty('display', 'none', 'important'); // Hide close icon by default
+        }
+        
+        // ONLY set positioning inline styles on mobile
+        if (isMobileViewport) {
+          mobileToggle.style.setProperty('position', 'absolute', 'important');
+          mobileToggle.style.setProperty('top', '50%', 'important');
+          mobileToggle.style.setProperty('transform', 'translateY(-50%)', 'important');
+          mobileToggle.style.setProperty('z-index', '1001', 'important');
+          
+          // Clear any inline left/right so CSS can take over based on html[dir]
+          mobileToggle.style.removeProperty('left');
+          mobileToggle.style.removeProperty('right');
+          
+          console.log('[Navbar] Mobile toggle positioning applied (mobile viewport)');
+        } else {
+          // On desktop, clear any positioning styles to let CSS handle it
+          mobileToggle.style.removeProperty('position');
+          mobileToggle.style.removeProperty('top');
+          mobileToggle.style.removeProperty('transform');
+          mobileToggle.style.removeProperty('z-index');
+          mobileToggle.style.removeProperty('left');
+          mobileToggle.style.removeProperty('right');
+          console.log('[Navbar] Desktop viewport - cleared mobile toggle inline positioning');
+        }
+      }
+      
+      if (phoneBtn) {
+        // Icon sizing applies to all viewports
+        const phoneIcon = phoneBtn.querySelector('svg');
+        if (phoneIcon) {
+          phoneIcon.style.width = '24px';
+          phoneIcon.style.height = '24px';
+          phoneIcon.setAttribute('width', '24');
+          phoneIcon.setAttribute('height', '24');
+        }
+        
+        // ONLY set positioning inline styles on mobile
+        if (isMobileViewport) {
+          phoneBtn.style.setProperty('position', 'absolute', 'important');
+          phoneBtn.style.setProperty('top', '50%', 'important');
+          phoneBtn.style.setProperty('transform', 'translateY(-50%)', 'important');
+          phoneBtn.style.setProperty('z-index', '1001', 'important');
+          
+          // Clear any inline left/right so CSS can take over based on html[dir]
+          phoneBtn.style.removeProperty('left');
+          phoneBtn.style.removeProperty('right');
+          
+          console.log('[Navbar] Phone button positioning applied (mobile viewport)');
+        } else {
+          // On desktop, clear any positioning styles to let CSS handle it
+          phoneBtn.style.removeProperty('position');
+          phoneBtn.style.removeProperty('top');
+          phoneBtn.style.removeProperty('transform');
+          phoneBtn.style.removeProperty('z-index');
+          phoneBtn.style.removeProperty('left');
+          phoneBtn.style.removeProperty('right');
+          console.log('[Navbar] Desktop viewport - cleared phone button inline positioning');
+        }
+      }
+    } else {
+      console.log('[Navbar] Could not parse background color:', bgColor);
+    }
+    
+    // MOBILE MENU TOGGLE
+    // Re-query in case DOM changed (mobileToggle already declared at top of function)
+    mobileToggle = document.getElementById('mobileToggle') ||
+                   document.querySelector('.mobile-toggle') ||
+                   document.querySelector('.hamburger') ||
+                   document.querySelector('.hamburger-menu') ||
+                   document.querySelector('.menu-toggle') ||
+                   document.querySelector('.burger-menu') ||
+                   document.querySelector('[aria-label="Menu"]') ||
+                   document.querySelector('[aria-label="תפריט"]');
+    
+    // EXPANDED SEARCH: Find nav menu by ID or class
+    const navMenu = document.getElementById('navMenu') ||
+                  document.querySelector('.nav-menu') ||
+                  document.querySelector('.nav-links') ||
+                  document.querySelector('nav ul:not(.submenu)');
+    
+    if (!mobileToggle || !navMenu) {
+      console.log('[Navbar] Mobile toggle or menu not found:', { toggle: !!mobileToggle, menu: !!navMenu });
+      return;
+    }
+    
+    // Ensure navMenu has ID for CSS targeting
+    if (!navMenu.id) {
+      navMenu.id = 'navMenu';
+    }
+    
+    console.log('[Navbar] Initializing mobile menu...');
+    
+    // Remove any existing event listeners by cloning the button
+    const newToggle = mobileToggle.cloneNode(true);
+    mobileToggle.parentNode.replaceChild(newToggle, mobileToggle);
+    
+    // Toggle menu on button click - use newToggle now
+    newToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const hamburgerIcon = this.querySelector('.hamburger-icon');
+      const closeIcon = this.querySelector('.close-icon');
+      const isActive = navMenu.classList.contains('active');
+      
+      if (isActive) {
+        // Close menu
+        navMenu.classList.remove('active');
+        if (hamburgerIcon) hamburgerIcon.style.setProperty('display', 'block', 'important');
+        if (closeIcon) closeIcon.style.setProperty('display', 'none', 'important');
+        document.body.style.overflow = '';
+        console.log('[Navbar] Menu closed');
+      } else {
+        // Open menu
+        navMenu.classList.add('active');
+        if (hamburgerIcon) hamburgerIcon.style.setProperty('display', 'none', 'important');
+        if (closeIcon) closeIcon.style.setProperty('display', 'block', 'important');
+        document.body.style.overflow = 'hidden';
+        console.log('[Navbar] Menu opened');
+      }
+    });
+    
+    // Close menu when clicking nav links (but NOT dropdown toggles)
+    const navLinks = navMenu.querySelectorAll('a');
+    navLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        // Don't close if it's a dropdown child (unless it's a real navigation link)
+        if (this.getAttribute('href') === '#') return;
+        
+        const hamburgerIcon = newToggle.querySelector('.hamburger-icon');
+        const closeIcon = newToggle.querySelector('.close-icon');
+        
+        navMenu.classList.remove('active');
+        if (hamburgerIcon) hamburgerIcon.style.setProperty('display', 'block', 'important');
+        if (closeIcon) closeIcon.style.setProperty('display', 'none', 'important');
+        document.body.style.overflow = '';
+        console.log('[Navbar] Menu closed (link clicked)');
+      });
+    });
+    
+    // DROPDOWN MENU TOGGLE (for mobile and touch devices)
+    var dropdownToggles = navMenu.querySelectorAll('.dropdown-toggle');
+    dropdownToggles.forEach(function(toggle) {
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var parent = this.closest('.nav-dropdown');
+        if (!parent) return;
+        
+        // Close other open dropdowns at the same level
+        var siblings = parent.parentNode.querySelectorAll('.nav-dropdown.open');
+        siblings.forEach(function(sib) {
+          if (sib !== parent) sib.classList.remove('open');
+        });
+        
+        parent.classList.toggle('open');
+        console.log('[Navbar] Dropdown toggled:', parent.classList.contains('open') ? 'open' : 'closed');
+      });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.nav-dropdown')) {
+        var openDropdowns = document.querySelectorAll('.nav-dropdown.open');
+        openDropdowns.forEach(function(dd) { dd.classList.remove('open'); });
+      }
+    });
+    
+    console.log('[Navbar] Dropdown handlers initialized for ' + dropdownToggles.length + ' dropdowns');
+    
+    // Phone button functionality (phoneBtn already declared at top of function)
+    if (phoneBtn) {
+      phoneBtn.addEventListener('click', function() {
+        // Get phone number from placeholder in page or use default
+        const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
+        const phoneNumber = phoneLinks.length > 0 
+          ? phoneLinks[0].getAttribute('href').replace('tel:', '')
+          : '[business_phone]';
+        
+        window.location.href = 'tel:' + phoneNumber;
+        console.log('[Navbar] Phone button clicked');
+      });
+    }
+    
+    console.log('[Navbar] Mobile menu initialized successfully');
+    
+    // === WHATSAPP BUTTON VISIBILITY FIX ===
+    // Ensure WhatsApp floating button is hidden on desktop and visible on mobile
+    // IMPORTANT: Only target the floating button by its class, NOT generic wa.me links
+    const handleWhatsAppVisibility = function() {
+      const whatsappBtn = document.querySelector('.whatsapp-float');
+      if (whatsappBtn) {
+        const isDesktop = window.innerWidth >= 769;
+        if (isDesktop) {
+          whatsappBtn.style.setProperty('display', 'none', 'important');
+          whatsappBtn.style.setProperty('visibility', 'hidden', 'important');
+          whatsappBtn.style.setProperty('opacity', '0', 'important');
+          whatsappBtn.style.setProperty('pointer-events', 'none', 'important');
+          console.log('[WhatsApp] Button hidden on desktop');
+        } else {
+          whatsappBtn.style.removeProperty('display');
+          whatsappBtn.style.removeProperty('visibility');
+          whatsappBtn.style.removeProperty('opacity');
+          whatsappBtn.style.removeProperty('pointer-events');
+          console.log('[WhatsApp] Button visible on mobile');
+        }
+      }
+    };
+    
+    // Run on load
+    handleWhatsAppVisibility();
+    
+    // Run on resize with debouncing
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(handleWhatsAppVisibility, 100);
+    });
+  });
+})();
+
+</script>
+  
+  <main>
+    <section id="hero" class="index-hero-section" data-layout-spec="בית-hero" dir="rtl" data-hero-type="fullscreen-scrim">
+  <!-- Background image -->
+  <div class="index-hero-bg">
+    <img data-hero-bg="true" data-placeholder="index-hero-image-1" data-context="A professional Israeli male singer performing on an elegant stage at a luxury wedding or upscale corporate event. Warm stage lighting, soft bokeh background with chandeliers and floral arrangements, the performer in a tailored suit holding a microphone with confidence. Bright, editorial, premium atmosphere." width="1200" height="700" src="/assets/site-index-hero-image-1.webp" alt="זמר מקצועי על במת אירוע יוקרתי">
+  </div>
+
+  <!-- Scrim overlay -->
+  <div class="index-hero-scrim" aria-hidden="true"></div>
+
+  <!-- Stage spotlight decorative motif -->
+  <div class="index-hero-spotlight" aria-hidden="true"></div>
+
+  <!-- Content wrapper -->
+  <div class="index-hero-container">
+    <!-- Frosted ivory overlay card -->
+    <div class="index-hero-card">
+
+      <!-- Gold ornamental divider top -->
+      <div class="index-hero-ornament-top" aria-hidden="true">
+        <svg data-no-icon-edit="true" aria-hidden="true" width="80" height="14" viewBox="0 0 80 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="7" x2="32" y2="7" stroke="#C9A84C" stroke-width="1" stroke-opacity="0.6"></line>
+          <polygon points="40,1 44,7 40,13 36,7" fill="#C9A84C" fill-opacity="0.7"></polygon>
+          <line x1="48" y1="7" x2="80" y2="7" stroke="#C9A84C" stroke-width="1" stroke-opacity="0.6"></line>
+        </svg>
+      </div>
+
+      <!-- Label -->
+      <span class="index-hero-label">Np Productions</span>
+
+      <!-- H1 -->
+      <h1 class="index-hero-h1">הזמר שיהפוך את האירוע שלך לבלתי נשכח</h1>
+
+      <!-- H3 subtitle -->
+      <h3 class="index-hero-subtitle">חתונות, אירועים עסקיים והופעות פרטיות — עם תהליך הזמנה מקצועי, חוזה דיגיטלי ברור וחוויה שתישאר בזיכרון לנצח.</h3>
+
+      <!-- CTA buttons -->
+      <div class="index-hero-cta-group">
+        <a href="#contact" class="index-hero-btn-primary">התחל בהזמנה</a>
+        <a href="#contract" class="index-hero-btn-secondary">לצפייה בתהליך החוזה</a>
+      </div>
+
+      <!-- Microcopy -->
+      <p class="index-hero-microcopy">
+        <svg data-element-type="icon" data-icon-type="svg" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:inline-block;vertical-align:middle;margin-inline-end:6px;">
+          <circle cx="7" cy="7" r="6" stroke="#C9A84C" stroke-width="1.2"></circle>
+          <path d="M4.5 7.2l1.8 1.8 3.2-3.5" stroke="#C9A84C" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        תהליך שקוף, מקצועי ומהיר — אישור בתוך 24 שעות
+      </p>
+
+      <!-- Gold ornamental divider bottom -->
+      <div class="index-hero-ornament-bottom" aria-hidden="true">
+        <svg data-no-icon-edit="true" aria-hidden="true" width="80" height="14" viewBox="0 0 80 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="7" x2="32" y2="7" stroke="#C9A84C" stroke-width="1" stroke-opacity="0.6"></line>
+          <polygon points="40,1 44,7 40,13 36,7" fill="#C9A84C" fill-opacity="0.7"></polygon>
+          <line x1="48" y1="7" x2="80" y2="7" stroke="#C9A84C" stroke-width="1" stroke-opacity="0.6"></line>
+        </svg>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom section divider: soft curved fade into light section -->
+  <div class="index-hero-divider-wrapper">
+    <!-- Gold rule accent -->
+    <div class="index-hero-gold-rule" aria-hidden="true"></div>
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1440 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,72 L0,36 Q180,10 360,28 T720,20 Q900,12 1080,30 T1440,22 L1440,72 Z" fill="var(--bg-light)"></path>
+    </svg>
+  </div>
+
+</section>
+
+<section class="index-services-section" data-layout-spec="בית-services" dir="rtl">
+  <div class="index-services-container">
+
+    <!-- Section Intro -->
+    <div class="index-services-intro">
+      <p class="index-services-eyebrow">השירותים שלנו</p>
+      <div class="index-services-gold-line" aria-hidden="true">
+        <svg data-no-icon-edit="true" aria-hidden="true" width="120" height="12" viewBox="0 0 120 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="6" x2="50" y2="6" stroke="url(#goldGrad1)" stroke-width="1"></line>
+          <rect x="54" y="4" width="4" height="4" transform="rotate(45 56 6)" fill="#C9A86A" opacity="0.7"></rect>
+          <line x1="62" y1="6" x2="120" y2="6" stroke="url(#goldGrad2)" stroke-width="1"></line>
+          <defs>
+            <linearGradient id="goldGrad1" x1="0" y1="0" x2="50" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#C9A86A" stop-opacity="0"></stop>
+              <stop offset="100%" stop-color="#C9A86A" stop-opacity="0.7"></stop>
+            </linearGradient>
+            <linearGradient id="goldGrad2" x1="62" y1="0" x2="120" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#C9A86A" stop-opacity="0.7"></stop>
+              <stop offset="100%" stop-color="#C9A86A" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <h2 class="index-services-heading">מה אנחנו מציעים</h2>
+      <p class="index-services-subheading">Np Productions מספקת חוויות מוזיקליות בלתי נשכחות לכל סוג של אירוע — מחתונות אינטימיות ועד אירועי חברה יוקרתיים. כל הזמנה מגובה בהסכם מקצועי ברור לשקט נפשי מלא.</p>
+    </div>
+
+    <!-- Service Cards -->
+    <div class="index-services-cards">
+
+      <article class="index-services-card">
+        <div class="index-services-card-icon" aria-hidden="true">
+          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 4C10.268 4 4 10.268 4 18s6.268 14 14 14 14-6.268 14-14S25.732 4 18 4z" stroke="currentColor" stroke-width="1.2" fill="none"></path>
+            <path d="M12 18c0-3.314 2.686-6 6-6s6 2.686 6 6-2.686 6-6 6-6-2.686-6-6z" stroke="currentColor" stroke-width="1.2" fill="none"></path>
+            <path d="M18 12V4M18 32v-8M4 18h8M24 18h8" stroke="currentColor" stroke-width="1.2"></path>
+            <circle cx="18" cy="18" r="2" fill="currentColor"></circle>
+          </svg>
+        </div>
+        <div class="index-services-card-content">
+          <h3 class="index-services-card-title">חתונות ואירועי שמחה</h3>
+          <p class="index-services-card-text">ביצועים חיים מרגשים שיהפכו את רגעי השמחה הגדולים לזיכרונות נצחיים. ממנגינות חופה ועד ריקודים — כל רגע מתוכנן בקפידה עבורכם.</p>
+          <div class="index-services-card-accent" aria-hidden="true"></div>
+        </div>
+      </article>
+
+      <article class="index-services-card">
+        <div class="index-services-card-icon" aria-hidden="true">
+          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="8" width="28" height="20" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"></rect>
+            <path d="M4 14h28" stroke="currentColor" stroke-width="1.2"></path>
+            <path d="M12 22h4M20 22h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path>
+            <circle cx="9" cy="11" r="1.2" fill="currentColor"></circle>
+            <circle cx="13" cy="11" r="1.2" fill="currentColor"></circle>
+          </svg>
+        </div>
+        <div class="index-services-card-content">
+          <h3 class="index-services-card-title">אירועי חברה ועסקים</h3>
+          <p class="index-services-card-text">הופעות מקצועיות לכנסים, מסיבות חברה וערבי גאלה. ביצועים ברמה גבוהה שמשדרים יוקרה ומשאירים רושם עמוק על כל האורחים.</p>
+          <div class="index-services-card-accent" aria-hidden="true"></div>
+        </div>
+      </article>
+
+      <article class="index-services-card">
+        <div class="index-services-card-icon" aria-hidden="true">
+          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6l2.5 7.5H28l-6.5 4.5 2.5 7.5L18 21l-6 4.5 2.5-7.5L8 13.5h7.5L18 6z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"></path>
+            <path d="M11 28h14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path>
+            <path d="M14 31h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path>
+          </svg>
+        </div>
+        <div class="index-services-card-content">
+          <h3 class="index-services-card-title">חגיגות פרטיות ואינטימיות</h3>
+          <p class="index-services-card-text">ימי הולדת, בר מצוות, ימי נישואין ואירועים אישיים — הופעה מותאמת אישית שמרגישה כאילו נכתבה בדיוק עבורכם.</p>
+          <div class="index-services-card-accent" aria-hidden="true"></div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Inclusion Strip -->
+    <div class="index-services-strip">
+      <div class="index-services-strip-inner">
+
+        <div class="index-services-strip-item">
+          <span class="index-services-strip-icon" aria-hidden="true">
+            <svg data-element-type="icon" data-icon-type="svg" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 9l4 4 8-8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+          <span class="index-services-strip-text">תקשורת מקצועית לאורך כל הדרך</span>
+        </div>
+
+        <div class="index-services-strip-divider" aria-hidden="true"></div>
+
+        <div class="index-services-strip-item">
+          <span class="index-services-strip-icon" aria-hidden="true">
+            <svg data-element-type="icon" data-icon-type="svg" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 9l4 4 8-8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+          <span class="index-services-strip-text">תכנון ביצוע מותאם לאירוע</span>
+        </div>
+
+        <div class="index-services-strip-divider" aria-hidden="true"></div>
+
+        <div class="index-services-strip-item">
+          <span class="index-services-strip-icon" aria-hidden="true">
+            <svg data-element-type="icon" data-icon-type="svg" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 9l4 4 8-8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+          <span class="index-services-strip-text">תיאום אירוע ברור ומסודר</span>
+        </div>
+
+        <div class="index-services-strip-divider" aria-hidden="true"></div>
+
+        <div class="index-services-strip-item">
+          <span class="index-services-strip-icon" aria-hidden="true">
+            <svg data-element-type="icon" data-icon-type="svg" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 9l4 4 8-8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+          <span class="index-services-strip-text">חוזה דיגיטלי רשמי לכל הזמנה</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom angled paper-cut divider -->
+  <div class="index-services-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1440 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <filter id="paperShadow" x="-5%" y="-20%" width="110%" height="140%">
+        <feDropShadow dx="0" dy="-3" stdDeviation="4" flood-color="#9B9590" flood-opacity="0.13"></feDropShadow>
+      </filter>
+      <path d="M0,72 L0,28 L360,8 L720,36 L1080,6 L1440,24 L1440,72 Z" fill="var(--bg-light)" filter="url(#paperShadow)"></path>
+    </svg>
+  </div>
+
+</section>
+
+<section id="benefits" class="index-benefits-section" data-layout-spec="בית-benefits" dir="rtl">
+  <div class="index-benefits-container">
+
+    <!-- START (right) column: text content -->
+    <div class="index-benefits-content">
+      <span class="index-benefits-eyebrow">למה לבחור בהסכם מקצועי</span>
+      <h2 class="index-benefits-heading">הביטחון שמתחיל
+לפני הבמה</h2>
+      <p class="index-benefits-intro">כל הופעה מוצלחת מתחילה בהבנה ברורה בין האמן ללקוח. חוזה מקצועי עם Np Productions מבטיח שהאירוע שלכם יתנהל בדיוק כפי שדמיינתם — ללא הפתעות, ללא אי-הבנות.</p>
+
+      <div class="index-benefits-divider-gold" aria-hidden="true"></div>
+
+      <ul class="index-benefits-list">
+        <li class="index-benefits-item">
+          <div class="index-benefits-item-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" data-element-type="icon" data-icon-type="svg">
+              <path d="M11 2L13.5 8H20L14.5 12L16.5 18L11 14L5.5 18L7.5 12L2 8H8.5L11 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path>
+            </svg>
+          </div>
+          <div class="index-benefits-item-body">
+            <h3 class="index-benefits-item-title">תנאים שקופים ומוסכמים</h3>
+            <p class="index-benefits-item-text">כל פרטי ההופעה — שעות, רפרטואר, ציוד וסידורים לוגיסטיים — מוגדרים בכתב ומאושרים על ידי שני הצדדים מראש.</p>
+          </div>
+        </li>
+        <li class="index-benefits-item">
+          <div class="index-benefits-item-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" data-element-type="icon" data-icon-type="svg">
+              <rect x="3" y="3" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.5"></rect>
+              <path d="M7 11L10 14L15 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </div>
+          <div class="index-benefits-item-body">
+            <h3 class="index-benefits-item-title">התאמה מלאה לאירוע שלכם</h3>
+            <p class="index-benefits-item-text">לפני יום האירוע מתקיים תיאום מקצועי מלא — סגנון מוזיקלי, אווירה רצויה, ציפיות ודרישות מיוחדות — הכל מתועד וחתום.</p>
+          </div>
+        </li>
+        <li class="index-benefits-item">
+          <div class="index-benefits-item-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" data-element-type="icon" data-icon-type="svg">
+              <path d="M11 2C6.03 2 2 6.03 2 11s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9z" stroke="currentColor" stroke-width="1.5"></path>
+              <path d="M11 7v4l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+            </svg>
+          </div>
+          <div class="index-benefits-item-body">
+            <h3 class="index-benefits-item-title">מחויבות מקצועית הדדית</h3>
+            <p class="index-benefits-item-text">ההסכם הדיגיטלי מגן על שני הצדדים — הלקוח מקבל ביטחון מלא, והאמן מגיע מוכן ומחויב לספק חוויה בלתי נשכחת.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- END (left) column: document preview -->
+    <div class="index-benefits-visual">
+      <!-- Backplate card (peeking from bottom-left corner) -->
+      <div class="index-benefits-backplate" aria-hidden="true"></div>
+
+      <!-- Main contract preview card -->
+      <article class="index-benefits-contract-card">
+        <header class="index-benefits-contract-header">
+          <div class="index-benefits-contract-logo-row">
+            <span class="index-benefits-contract-brand">NP Productions</span>
+            <span class="index-benefits-contract-badge">הסכם הופעה</span>
+          </div>
+          <div class="index-benefits-contract-gold-rule" aria-hidden="true"></div>
+          <h2 class="index-benefits-contract-title">הסכם שירותי הופעה מוזיקלית</h2>
+          <p class="index-benefits-contract-subtitle">בין האמן ללקוח — לאירועים פרטיים ועסקיים</p>
+        </header>
+
+        <div class="index-benefits-contract-body">
+
+          <div class="index-benefits-contract-section">
+            <span class="index-benefits-contract-section-label">פרטי האירוע</span>
+            <div class="index-benefits-contract-field">
+              <span class="index-benefits-contract-field-label">תאריך האירוע</span>
+              <span class="index-benefits-contract-field-line"></span>
+            </div>
+            <div class="index-benefits-contract-field">
+              <span class="index-benefits-contract-field-label">מיקום</span>
+              <span class="index-benefits-contract-field-line"></span>
+            </div>
+            <div class="index-benefits-contract-field">
+              <span class="index-benefits-contract-field-label">סוג האירוע</span>
+              <span class="index-benefits-contract-field-line"></span>
+            </div>
+          </div>
+
+          <div class="index-benefits-contract-gold-rule index-benefits-contract-gold-rule--thin" aria-hidden="true"></div>
+
+          <div class="index-benefits-contract-section">
+            <span class="index-benefits-contract-section-label">תנאי ההופעה</span>
+            <div class="index-benefits-contract-field">
+              <span class="index-benefits-contract-field-label">משך ההופעה</span>
+              <span class="index-benefits-contract-field-line"></span>
+            </div>
+            <div class="index-benefits-contract-field">
+              <span class="index-benefits-contract-field-label">סגנון מוזיקלי</span>
+              <span class="index-benefits-contract-field-line"></span>
+            </div>
+          </div>
+
+          <div class="index-benefits-contract-gold-rule index-benefits-contract-gold-rule--thin" aria-hidden="true"></div>
+
+          <div class="index-benefits-contract-section index-benefits-contract-section--signature">
+            <span class="index-benefits-contract-section-label">אישור וחתימה</span>
+            <div class="index-benefits-contract-sig-row">
+              <div class="index-benefits-contract-sig-block">
+                <span class="index-benefits-contract-sig-label">חתימת הלקוח</span>
+                <div class="index-benefits-contract-sig-line"></div>
+              </div>
+              <div class="index-benefits-contract-sig-block">
+                <span class="index-benefits-contract-sig-label">חתימת האמן</span>
+                <div class="index-benefits-contract-sig-line"></div>
+              </div>
+            </div>
+            <div class="index-benefits-contract-confirmed">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-no-icon-edit="true">
+                <circle cx="7" cy="7" r="6" stroke="#1F4FD6" stroke-width="1.2"></circle>
+                <path d="M4.5 7l2 2 3-3.5" stroke="#1F4FD6" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+              <span>ההסכם נחתם דיגיטלית ומאובטח</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Decorative image within card -->
+        <div class="index-benefits-contract-image-wrap">
+          <img data-placeholder="index-benefits-image-1" data-context="Elegant close-up of a professional contract document being signed with a luxury pen, soft warm lighting, ivory paper with gold accents, formal agreement atmosphere for a musical performer booking service" width="600" height="400" src="/assets/site-index-benefits-image-1.webp" alt="חתימה על הסכם הופעה מקצועי">
+        </div>
+      </article>
+    </div>
+
+  </div>
+
+  <!-- Bottom gradient dissolve divider -->
+  <div class="index-benefits-divider-wrapper" aria-hidden="true">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="benefits-fade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#FCFAF6" stop-opacity="0"></stop>
+          <stop offset="100%" stop-color="#F0EDE6" stop-opacity="1"></stop>
+        </linearGradient>
+      </defs>
+      <rect width="1200" height="60" fill="url(#benefits-fade)"></rect>
+    </svg>
+  </div>
+</section>
+
+<section id="testimonials" class="index-testimonials-section" data-layout-spec="בית-testimonials" dir="rtl">
+  <div class="index-testimonials-container">
+
+    <!-- Section Header -->
+    <div class="index-testimonials-header">
+      <span class="index-testimonials-eyebrow">מה אומרים עלינו</span>
+      <h2 class="index-testimonials-title">לקוחות מספרים</h2>
+      <div class="index-testimonials-gold-divider" aria-hidden="true">
+        <svg data-no-icon-edit="true" aria-hidden="true" width="120" height="12" viewBox="0 0 120 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="6" x2="52" y2="6" stroke="url(#goldGrad)" stroke-width="1"></line>
+          <polygon points="60,0 64,6 60,12 56,6" fill="#C9A86A"></polygon>
+          <line x1="68" y1="6" x2="120" y2="6" stroke="url(#goldGradRev)" stroke-width="1"></line>
+          <defs>
+            <linearGradient id="goldGrad" x1="0" y1="0" x2="52" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#C9A86A" stop-opacity="0"></stop>
+              <stop offset="100%" stop-color="#C9A86A" stop-opacity="0.8"></stop>
+            </linearGradient>
+            <linearGradient id="goldGradRev" x1="68" y1="0" x2="120" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#C9A86A" stop-opacity="0.8"></stop>
+              <stop offset="100%" stop-color="#C9A86A" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Testimonials Grid -->
+    <div class="index-testimonials-grid">
+
+      <!-- Card 1 - Wedding -->
+      <article class="index-testimonial-card">
+        <div class="index-testimonial-quote-mark" aria-hidden="true">“</div>
+        <blockquote class="index-testimonial-text">
+          הופעה שלא נשכח לאורך שנים. האווירה שיצר היתה מושלמת לחתונה שלנו — כל שיר הרגיש כאילו נבחר במיוחד בשבילנו. גם תהליך ההזמנה וחתימת ההסכם היה פשוט, מקצועי ומרגיע.
+        </blockquote>
+        <div class="index-testimonial-divider" aria-hidden="true"></div>
+        <footer class="index-testimonial-footer">
+          <div class="index-testimonial-avatar" aria-hidden="true">
+            <span>מ</span>
+          </div>
+          <div class="index-testimonial-meta">
+            <cite class="index-testimonial-name">מיכל ואלון כהן</cite>
+            <span class="index-testimonial-role">זוג מתחתן · אולם אירועים, תל אביב</span>
+          </div>
+        </footer>
+        <div class="index-testimonial-glow" aria-hidden="true"></div>
+      </article>
+
+      <!-- Card 2 - Event Planner -->
+      <article class="index-testimonial-card index-testimonial-card--featured">
+        <div class="index-testimonial-quote-mark" aria-hidden="true">“</div>
+        <blockquote class="index-testimonial-text">
+          כמנהלת אירועים, שיתפתי פעולה עם Np Productions בכמה אירועי חברה. הרמה האמנותית גבוהה מאוד, ההגעה תמיד בזמן, וההסכם הדיגיטלי חסך לנו המון זמן יקר. ממליצה בחום לכל ארגון.
+        </blockquote>
+        <div class="index-testimonial-divider" aria-hidden="true"></div>
+        <footer class="index-testimonial-footer">
+          <div class="index-testimonial-avatar" aria-hidden="true">
+            <span>ש</span>
+          </div>
+          <div class="index-testimonial-meta">
+            <cite class="index-testimonial-name">שירה לוי</cite>
+            <span class="index-testimonial-role">מנהלת אירועים · חברת הייטק, הרצליה</span>
+          </div>
+        </footer>
+        <div class="index-testimonial-glow index-testimonial-glow--featured" aria-hidden="true"></div>
+      </article>
+
+      <!-- Card 3 - Private Event -->
+      <article class="index-testimonial-card">
+        <div class="index-testimonial-quote-mark" aria-hidden="true">“</div>
+        <blockquote class="index-testimonial-text">
+          הזמנתי זמר לאירועים פרטיים בעבר, אבל החוויה עם Np Productions הייתה ברמה אחרת לגמרי. הכל היה שקוף ומסודר — מהצעת המחיר ועד חתימת החוזה. ההופעה עצמה? פשוט קסם.
+        </blockquote>
+        <div class="index-testimonial-divider" aria-hidden="true"></div>
+        <footer class="index-testimonial-footer">
+          <div class="index-testimonial-avatar" aria-hidden="true">
+            <span>ד</span>
+          </div>
+          <div class="index-testimonial-meta">
+            <cite class="index-testimonial-name">דוד ברקוביץ</cite>
+            <span class="index-testimonial-role">אירוע פרטי · יום הולדת 50, ירושלים</span>
+          </div>
+        </footer>
+        <div class="index-testimonial-glow" aria-hidden="true"></div>
+      </article>
+
+    </div>
+
+    <!-- Trust Note -->
+    <div class="index-testimonials-trust">
+      <div class="index-testimonials-stars" aria-label="חמישה כוכבים">
+        <svg data-no-icon-edit="true" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#C9A86A" xmlns="http://www.w3.org/2000/svg"><path d="M8 1l1.8 3.6L14 5.3l-3 2.9.7 4.1L8 10.4l-3.7 1.9.7-4.1-3-2.9 4.2-.7z"></path></svg>
+        <svg data-no-icon-edit="true" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#C9A86A" xmlns="http://www.w3.org/2000/svg"><path d="M8 1l1.8 3.6L14 5.3l-3 2.9.7 4.1L8 10.4l-3.7 1.9.7-4.1-3-2.9 4.2-.7z"></path></svg>
+        <svg data-no-icon-edit="true" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#C9A86A" xmlns="http://www.w3.org/2000/svg"><path d="M8 1l1.8 3.6L14 5.3l-3 2.9.7 4.1L8 10.4l-3.7 1.9.7-4.1-3-2.9 4.2-.7z"></path></svg>
+        <svg data-no-icon-edit="true" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#C9A86A" xmlns="http://www.w3.org/2000/svg"><path d="M8 1l1.8 3.6L14 5.3l-3 2.9.7 4.1L8 10.4l-3.7 1.9.7-4.1-3-2.9 4.2-.7z"></path></svg>
+        <svg data-no-icon-edit="true" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#C9A86A" xmlns="http://www.w3.org/2000/svg"><path d="M8 1l1.8 3.6L14 5.3l-3 2.9.7 4.1L8 10.4l-3.7 1.9.7-4.1-3-2.9 4.2-.7z"></path></svg>
+      </div>
+      <p class="index-testimonials-trust-text">לקוחותינו מעריכים את הרמה האמנותית לצד השקיפות המלאה בתהליך ההזמנה — חוזה דיגיטלי ברור, מקצועי ומהיר.</p>
+    </div>
+
+  </div>
+
+  <!-- Bottom Wave Divider -->
+  <div class="index-testimonials-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,80 L0,48 Q60,32 120,44 T240,38 Q300,44 360,34 T480,42 Q540,36 600,44 T720,36 Q780,44 840,38 T960,44 Q1020,36 1080,44 T1200,38 Q1260,44 1320,36 T1440,44 L1440,80 Z" fill="var(--bg-light)"></path>
+    </svg>
+  </div>
+
+</section>
+
+<section id="portfolio" class="index-portfolio-section" data-layout-spec="בית-portfolio" dir="rtl">
+  <div class="portfolio-container">
+
+    <!-- Section Header -->
+    <div class="portfolio-header">
+      <div class="portfolio-label">הגלריה שלנו</div>
+      <h2 class="portfolio-title">רגעים שנשארים לנצח</h2>
+      <div class="portfolio-gold-divider" aria-hidden="true">
+        <svg data-no-icon-edit="true" aria-hidden="true" width="120" height="16" viewBox="0 0 120 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="8" x2="52" y2="8" stroke="#C9A86A" stroke-width="1" stroke-opacity="0.6"></line>
+          <rect x="54" y="4" width="12" height="8" rx="1" fill="#C9A86A" fill-opacity="0.6" transform="rotate(45 60 8)"></rect>
+          <line x1="68" y1="8" x2="120" y2="8" stroke="#C9A86A" stroke-width="1" stroke-opacity="0.6"></line>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Asymmetric 4-tile mosaic grid -->
+    <div class="portfolio-grid">
+
+      <!-- Large tile — START side (right in RTL) -->
+      <div class="portfolio-tile tile-large">
+        <img data-placeholder="index-portfolio-image-1" data-context="An elegant wedding celebration in Israel: a well-dressed male singer performing on a beautifully lit stage with soft warm lighting, the bride and groom swaying in the foreground, floral arrangements and fairy lights in the background, high-end photography style, clean bright tones" width="600" height="800" src="/assets/site-index-portfolio-image-1.webp" alt="זמר לאירועים — חתונה אלגנטית">
+      </div>
+
+      <!-- Three supporting tiles — END side (left in RTL) -->
+      <div class="portfolio-tiles-secondary">
+
+        <div class="portfolio-tile tile-top-right">
+          <img data-placeholder="index-portfolio-image-2" data-context="A sophisticated corporate evening event in Israel: a male performer in a tailored suit singing at a podium on a modern stage, professional audience in business attire, ambient blue-white lighting, high-end venue with elegant decor, editorial photography style" width="400" height="260" src="/assets/site-index-portfolio-image-2.webp" alt="הופעה בערב תאגידי יוקרתי">
+        </div>
+
+        <div class="portfolio-tile tile-bottom-left">
+          <img data-placeholder="index-portfolio-image-3" data-context="An intimate private performance in a luxury villa garden in Israel: a singer performing acoustically for a small group of guests seated at round tables with candles and white linens, warm golden hour light, refined and emotional atmosphere, magazine-quality photography" width="260" height="260" src="/assets/site-index-portfolio-image-3.webp" alt="הופעה אינטימית פרטית">
+        </div>
+
+        <div class="portfolio-tile tile-bottom-right">
+          <img data-placeholder="index-portfolio-image-4" data-context="A bar mitzvah or milestone celebration in Israel: a singer engaging with the crowd on a decorated stage, colorful tasteful lighting, joyful guests, a festive but elegant atmosphere, clean bright photography with emotional resonance, high production quality" width="260" height="260" src="/assets/site-index-portfolio-image-4.webp" alt="אירוע חגיגי ומרגש">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Descriptive line beneath the grid -->
+    <p class="portfolio-caption">
+      מחתונות אלגנטיות ועד ערבי חברה יוקרתיים והופעות פרטיות אינטימיות — Np Productions מביא עמו אווירה, רגש ומקצועיות לכל במה.
+    </p>
+
+  </div>
+
+  <!-- Bottom divider: royal-blue band with soft upward arc -->
+  <div class="portfolio-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1200 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,72 L0,42 Q300,10 600,28 Q900,46 1200,18 L1200,72 Z" fill="var(--bg-light)" fill-opacity="0.92"></path>
+      <path d="M0,72 L0,52 Q300,26 600,40 Q900,54 1200,30 L1200,72 Z" fill="var(--bg-light)"></path>
+    </svg>
+  </div>
+</section>
+
+<section id="stats" class="index-stats-section" data-layout-spec="בית-stats" dir="rtl">
+  <div class="index-stats-container">
+
+    <!-- Section Header -->
+    <div class="index-stats-header">
+      <p class="index-stats-eyebrow">מספרים שמדברים בעד עצמם</p>
+      <h2 class="index-stats-title">הביטחון שלכם מתחיל בניסיון שלנו</h2>
+      <div class="index-stats-divider-line" aria-hidden="true"></div>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="index-stats-grid">
+
+      <article class="index-stat-card">
+        <span class="index-stat-number">12+</span>
+        <h3 class="index-stat-label">שנות ניסיון</h3>
+        <p class="index-stat-note">ביצועים מקצועיים לאורך שנים רבות</p>
+      </article>
+
+      <article class="index-stat-card">
+        <span class="index-stat-number">300+</span>
+        <h3 class="index-stat-label">אירועים מוצלחים</h3>
+        <p class="index-stat-note">חתונות, ערבי חברה ואירועים פרטיים</p>
+      </article>
+
+      <article class="index-stat-card">
+        <span class="index-stat-number">24</span>
+        <h3 class="index-stat-label">שעות מענה</h3>
+        <p class="index-stat-note">תגובה מהירה לכל פנייה ובקשה</p>
+      </article>
+
+      <article class="index-stat-card">
+        <span class="index-stat-number">100%</span>
+        <h3 class="index-stat-label">שביעות רצון</h3>
+        <p class="index-stat-note">מחויבות מלאה לחוויה בלתי נשכחת</p>
+      </article>
+
+    </div>
+
+    <!-- Reassurance Row -->
+    <div class="index-stats-reassurance">
+      <div class="index-reassurance-item">
+        <span class="index-reassurance-icon" aria-hidden="true">
+          <svg data-element-type="icon" data-icon-type="svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </span>
+        <span class="index-reassurance-text">מקצועיות ואמינות בכל אירוע</span>
+      </div>
+      <div class="index-reassurance-separator" aria-hidden="true"></div>
+      <div class="index-reassurance-item">
+        <span class="index-reassurance-icon" aria-hidden="true">
+          <svg data-element-type="icon" data-icon-type="svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </span>
+        <span class="index-reassurance-text">תיאום מהיר וחלק מהפנייה הראשונה</span>
+      </div>
+      <div class="index-reassurance-separator" aria-hidden="true"></div>
+      <div class="index-reassurance-item">
+        <span class="index-reassurance-icon" aria-hidden="true">
+          <svg data-element-type="icon" data-icon-type="svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </span>
+        <span class="index-reassurance-text">חוזה ברור ושקוף לפני כל הופעה</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Curved Divider -->
+  <div class="index-stats-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,80 L0,48 Q360,0 720,20 Q1080,40 1440,8 L1440,80 Z" fill="#0D0D1A"></path>
+    </svg>
+  </div>
+
+</section>
+
+<section id="contact" class="index-contact-section" data-layout-spec="בית-contact" dir="rtl">
+  <!-- Decorative background glow -->
+  <div class="contact-bg-glow" aria-hidden="true"></div>
+
+  <div class="contact-container">
+    <!-- START column: persuasive content -->
+    <div class="contact-content-col">
+      <div class="contact-eyebrow">צרו קשר</div>
+      <h2 class="contact-heading">מוכנים להפוך את האירוע שלכם לבלתי נשכח?</h2>
+      <p class="contact-subtext">Np Productions מלווה חתונות, אירועי חברות ומופעים פרטיים עם ביצועים חיים ברמה הגבוהה ביותר. שלחו פרטים ונחזור אליכם עם הצעה מותאמת ואפשרות לחתימה דיגיטלית על ההסכם.</p>
+
+      <!-- Gold divider ornament -->
+      <div class="contact-divider-ornament" aria-hidden="true">
+        <span class="ornament-line"></span>
+        <svg data-no-icon-edit="true" aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="0" width="8.485" height="8.485" transform="rotate(45 6 0)" fill="#C9A86A" opacity="0.7"></rect>
+        </svg>
+        <span class="ornament-line"></span>
+      </div>
+
+      <!-- Three-step process -->
+      <div class="contact-steps">
+        <div class="contact-step">
+          <div class="step-marker">
+            <span class="step-number">01</span>
+          </div>
+          <div class="step-content">
+            <h3 class="step-title">שלחו פרטים</h3>
+            <p class="step-desc">מלאו את הטופס עם פרטי האירוע שלכם — תאריך, סוג אירוע ובקשות מיוחדות.</p>
+          </div>
+        </div>
+
+        <div class="contact-step">
+          <div class="step-marker">
+            <span class="step-number">02</span>
+          </div>
+          <div class="step-content">
+            <h3 class="step-title">קבלו את ההסכם</h3>
+            <p class="step-desc">נשלח אליכם הצעת מחיר מפורטת יחד עם הסכם מקצועי לחתימה דיגיטלית.</p>
+          </div>
+        </div>
+
+        <div class="contact-step">
+          <div class="step-marker">
+            <span class="step-number">03</span>
+          </div>
+          <div class="step-content">
+            <h3 class="step-title">אשרו בחתימה</h3>
+            <p class="step-desc">חתמו על ההסכם בקלות ובאופן דיגיטלי — ואנחנו נדאג לשאר.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step connector dots decoration -->
+      <div class="step-dots-decoration" aria-hidden="true">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+
+    <!-- END column: contact form card -->
+    <div class="contact-form-col">
+      <div class="contact-form-card">
+        <div class="form-card-header">
+          <h3 class="form-card-title">התחילו את התהליך</h3>
+          <p class="form-card-subtitle">נחזור אליכם תוך 24 שעות</p>
+        </div>
+
+        <form class="contact-form" novalidate="">
+          <div class="form-group">
+            <label class="form-label" for="contact-name">שם מלא</label>
+            <input type="text" id="contact-name" name="name" class="form-input" placeholder="ישראל ישראלי" required="">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contact-email">כתובת אימייל</label>
+            <input type="email" id="contact-email" name="email" class="form-input" placeholder="israel@example.com" required="">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contact-phone">טלפון</label>
+            <input type="tel" id="contact-phone" name="phone" class="form-input" placeholder="050-000-0000" required="">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contact-message">פרטי האירוע</label>
+            <textarea id="contact-message" name="message" class="form-input form-textarea" placeholder="ספרו לנו על האירוע שלכם — תאריך, מיקום, סוג אירוע ובקשות מיוחדות..." rows="4" required=""></textarea>
+          </div>
+
+          <div class="privacy-consent">
+            <label class="privacy-consent-label">
+              <input type="checkbox" name="privacy_consent" class="privacy-consent-checkbox" required="">
+              <span>קראתי ואני מסכים/ה ל<a href="/terms" target="_blank">תנאי השימוש</a> ול<a href="/privacy" target="_blank">מדיניות הפרטיות</a></span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn-primary contact-submit-btn">
+            <span>שלחו פרטים ובקשו הסכם</span>
+            <svg data-element-type="icon" data-icon-type="svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+        </form>
+
+        <p class="form-reassurance">
+          <svg data-element-type="icon" data-icon-type="svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:middle;margin-inline-end:4px;">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          הצוות שלנו יחזור אליכם עם פרטי ההופעה ושלבי ההסכם תוך יום עסקים אחד.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+  </main>
+  
+  <footer class="site-footer" dir="rtl"><div class="footer-container"><div class="footer-top"><div class="footer-col footer-brand"><div class="footer-logo-wrap"><img src="/assets/np-productions-logo.webp" alt="Np Productions" class="logo"></div><p class="footer-tagline">מוזיקה ובידור ברמה הגבוהה ביותר — חוויות שנשארות לנצח.</p><div class="footer-social"><a href="[facebook_handle]" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="[instagram_handle]" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="[whatsapp_handle]" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a></div></div><div class="footer-col footer-links"><h4 class="footer-heading">ניווט מהיר</h4><ul class="footer-nav"><li><a href="#services">שירותים</a></li><li><a href="#benefits">יתרונות</a></li><li><a href="#testimonials">המלצות</a></li><li><a href="#portfolio">תיק עבודות</a></li><li><a href="#stats">נתונים</a></li></ul></div><div class="footer-col footer-contact-col"><h4 class="footer-heading">צור קשר</h4><ul class="footer-contact"><li><span class="contact-icon"><i class="fas fa-envelope"></i></span><span class="contact-text"><a href="mailto:[business_email]">[business_email]</a></span></li><li><span class="contact-icon"><i class="fas fa-phone"></i></span><span class="contact-text"><a href="tel:[business_phone]">[business_phone]</a></span></li><li><a href="/"><span class="contact-icon"><i class="fas fa-map-marker-alt"></i></span><span class="contact-text">[business_address]</span></a></li></ul></div></div><div class="footer-divider"></div><div class="footer-bottom"><p class="footer-copyright">© 2026 Np Productions. כל הזכויות שמורות.</p><div class="footer-legal"><a href="/privacy">מדיניות פרטיות</a><span class="footer-dot">·</span><a href="/terms">תנאי שימוש</a><span class="footer-dot">·</span><a href="/accessibility">נגישות</a><span class="footer-dot">·</span><a href="https://zappy5.com" target="_blank" class="zappy-attribution">נוצר באמצעות Zappy</a></div></div></div></footer>
+  
+  <a href="https://wa.me/[whatsapp_handle]" class="whatsapp-float" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+  
+  <div data-integration="accessibility:toolbar"></div>
+
+    <script src="/script.js"></script>
+
+    <script id="zappy-mobile-submenu-script">
+    (function() {
+      function initMobileSubmenuToggles() {
+        if (window.innerWidth > 768) {
+          document.querySelectorAll('.mobile-submenu-toggle').forEach(function(btn) { btn.remove(); });
+          document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) { menu.classList.remove('mobile-expanded'); });
+          return;
+        }
+        var items = document.querySelectorAll('.nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu)');
+        items.forEach(function(li) {
+          if (li.querySelector('.mobile-submenu-toggle')) return;
+          var submenu = li.querySelector('.sub-menu');
+          var parentLink = li.querySelector(':scope > a');
+          if (!submenu || !parentLink) return;
+          var toggleBtn = document.createElement('button');
+          toggleBtn.className = 'mobile-submenu-toggle';
+          toggleBtn.setAttribute('aria-label', 'Toggle submenu');
+          toggleBtn.setAttribute('type', 'button');
+          parentLink.insertAdjacentElement('afterend', toggleBtn);
+          toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) {
+              if (menu !== submenu) { menu.classList.remove('mobile-expanded'); var t = menu.parentElement.querySelector('.mobile-submenu-toggle'); if(t) t.classList.remove('expanded'); }
+            });
+            submenu.classList.toggle('mobile-expanded');
+            toggleBtn.classList.toggle('expanded');
+          });
+        });
+      }
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initMobileSubmenuToggles); }
+      else { initMobileSubmenuToggles(); }
+      var resizeTimer; window.addEventListener('resize', function() { clearTimeout(resizeTimer); resizeTimer = setTimeout(initMobileSubmenuToggles, 250); });
+      // Re-initialize when mobile menu becomes visible (MutationObserver)
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'attributes') {
+            var target = mutation.target;
+            if (target.classList && (target.classList.contains('active') || target.classList.contains('open'))) {
+              setTimeout(initMobileSubmenuToggles, 100);
+            }
+          }
+        });
+      });
+      setTimeout(function() {
+        document.querySelectorAll('.mobile-menu, .nav-menu, #navMenu, nav').forEach(function(menu) {
+          observer.observe(menu, { attributes: true, attributeFilter: ['class', 'style'] });
+        });
+      }, 500);
+    })();
+    </script>
+</body>
+</html>
